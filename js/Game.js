@@ -11,23 +11,8 @@ var MIN_WORD_LENGTH = 3;
 var LONG_WORD_LENGTH = 5;
 var SUPER_LONG_WORD_LENGTH = 7;
 
-var LEVEL_COLOR_1 = [
+var LEVEL_COLORS = [
 	'#0056f6',
-	'#00a800',
-	'#db00cd',
-	'#555',
-	'#f83a00',
-	'#6c47ff',
-	'#ab0022',
-	'#ffa347',
-	'#58f898',
-	'#6b89ff',
-	'#3ebefe',
-	'#80d010'
-];
-
-var LEVEL_COLOR_2 = [
-	'#4c88f8',
 	'#00a800',
 	'#db00cd',
 	'#555',

@@ -60,10 +60,17 @@ var AnimationObj = function(){
 		me.onTickStep(tickDuration);
 
 		if(me.duration > 0) me.duration--;
-		if(me.duration === 0) game.removeGameObject(me);
+		if(me.duration === 0){
+			me.onDie();
+			game.removeGameObject(me);
+		}
 	};
 
 	me.onTickStep = function(tickDuration){
+
+	};
+
+	me.onDie = function(){
 
 	};
 
@@ -84,7 +91,7 @@ var randomGoalAnimation = function(){
 		'Try to reach level 5.',
 	];
 
-	me.duration = 280;
+	me.duration = 2;
 	me.initialFlashTime = 2;
 	me.flashGrowAmount = 1;
 	me.count = 0;
@@ -116,6 +123,10 @@ var randomGoalAnimation = function(){
 			if(me.currentGoalIndex >= me.goals.length) me.currentGoalIndex = 0;
 		}
 		me.count++;
+	};
+
+	me.onDie = function(){
+		game.seconds = 0;
 	};
 
 	return me;
@@ -161,7 +172,7 @@ var WHEEL_QTY = 11;
 var Wheels = function(x, y){
 	var me = GameObject(x, y, 800, 800);
 
-	me.level = 0;
+	me.level = 4;
 	me.opsCount = 0;
 	me.totalWordCount = 0;
 	me.longWordCount = 0;
@@ -191,11 +202,13 @@ var Wheels = function(x, y){
 	me.init = function(){
 		for(var i=0; i<WHEEL_QTY; i++){
 			var cell = Cell(me, true, i);
+			cell.hasScored = true;
 			me.vWheel.push(cell);
 			me.cells.push(cell);
 		}
 		for(var i=0; i<WHEEL_QTY; i++){
 			var cell = Cell(me, false, i);
+			if(i > 1) cell.hasScored = true;
 			me.hWheel.push(cell);
 			me.cells.push(cell);
 		}
@@ -215,11 +228,12 @@ var Wheels = function(x, y){
 	};
 
 	me.canLevelUp = function(){
-		for(var i=0; i<me.cells.length; i++) if(me.cells[i].level <= me.level) return;
+		for(var i=0; i<me.cells.length; i++) if(!me.cells[i].hasScored) return false;
+		return true;
 	};
 
 	me.levelUp = function(){
-		for(var i=0; i<me.cells.length; i++) if(me.cells[i].level <= me.level) me.cells[i].levelUp();
+		for(var i=0; i<me.cells.length; i++) me.cells[i].levelUp();
 		me.level++;
 		me.randomizeAwayWords();
 	};
@@ -292,6 +306,7 @@ var Wheels = function(x, y){
 	};
 
 	me.draw = function(ctx){
+		me.drawBg(ctx);
 		me.drawVerticalWheel(ctx);
 		me.drawHorizontalWheel(ctx);
 		me.drawMask(ctx);
@@ -381,9 +396,14 @@ var Wheels = function(x, y){
 		}
 	};
 
+	me.drawBg = function(ctx){
+		ctx.fillStyle = LEVEL_COLORS[me.level];
+		ctx.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	};
+
 	me.drawMask = function(ctx){
 		var borderThickness = 40;
-		ctx.fillStyle = "black";
+		ctx.fillStyle = LEVEL_COLORS[me.level];
 		ctx.fillRect(0, me.y+borderThickness, SCREEN_WIDTH, -100);
 		ctx.fillRect(0, me.y+me.h-borderThickness, SCREEN_WIDTH, 100);
 		ctx.fillRect(me.x+borderThickness, 0, -100, SCREEN_HEIGHT);
@@ -609,22 +629,6 @@ var Cell = function(parent, isVertical, wheelIndex){
 	me.wheelIndex = wheelIndex;
 	me.hasScored = false;
 	me.char = 'C';
-	me.level = 0;
-
-	me.levelColors = [
-		'#0056f6',
-		'#00a800',
-		'#db00cd',
-		'#555',
-		'#f83a00',
-		'#6c47ff',
-		'#ab0022',
-		'#ffa347',
-		'#58f898',
-		'#6b89ff',
-		'#3ebefe',
-		'#80d010'
-	];
 
 	me.init = function(){
 		me.randomize();
@@ -654,9 +658,9 @@ var Cell = function(parent, isVertical, wheelIndex){
 
 	me.drawDetails = function(ctx, useOrigin){
 		var char = me.char;
-		var bg = me.levelColors[me.parent.level];
+		var bg = LEVEL_COLORS[me.parent.level];
 		var fg = WHITE;
-		if(!me.hasScored){
+		if(me.hasScored){
 			var temp = bg;
 			bg = fg;
 			fg = temp;
@@ -669,8 +673,16 @@ var Cell = function(parent, isVertical, wheelIndex){
 			yy = me.parent.getCellY(me);
 		}
 
-		ctx.fillStyle = bg;
+		if(!me.hasScored){
+			ctx.fillStyle = fg;
+			ctx.fillRect(xx+2, yy+2, me.w-4, me.h-4);
+			ctx.fillStyle = bg;
+			ctx.fillRect(xx+6, yy+6, me.w-12, me.h-12);
+			
+		}else{
+			ctx.fillStyle = bg;
 		ctx.fillRect(xx+2, yy+2, me.w-4, me.h-4);
+		}
 
 		ctx.fillStyle = fg;
 		ctx.textAlign = "center";

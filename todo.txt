@@ -1,4 +1,4 @@
-
+Bug: upon leveling up, the word that flys away shows the new letters. Needs to show old letters.
 
 find 20 words in 5 min
 reach level 2 in under 20 ops
