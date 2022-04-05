@@ -91,7 +91,7 @@ var randomGoalAnimation = function(){
 		'Try to reach level 5.',
 	];
 
-	me.duration = 2;
+	me.duration = 280;
 	me.initialFlashTime = 2;
 	me.flashGrowAmount = 1;
 	me.count = 0;
@@ -172,7 +172,7 @@ var WHEEL_QTY = 11;
 var Wheels = function(x, y){
 	var me = GameObject(x, y, 800, 800);
 
-	me.level = 4;
+	me.level = 0;
 	me.opsCount = 0;
 	me.totalWordCount = 0;
 	me.longWordCount = 0;
@@ -202,13 +202,11 @@ var Wheels = function(x, y){
 	me.init = function(){
 		for(var i=0; i<WHEEL_QTY; i++){
 			var cell = Cell(me, true, i);
-			cell.hasScored = true;
 			me.vWheel.push(cell);
 			me.cells.push(cell);
 		}
 		for(var i=0; i<WHEEL_QTY; i++){
 			var cell = Cell(me, false, i);
-			if(i > 1) cell.hasScored = true;
 			me.hWheel.push(cell);
 			me.cells.push(cell);
 		}
