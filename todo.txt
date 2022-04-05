@@ -1,0 +1,26 @@
+
+
+find 20 words in 5 min
+reach level 2 in under 20 ops
+reach level 2 in under 2 min
+find 3 long (6+ letter) words
+find a super long (9+ letter) word
+find at least 20 words before level 2
+find two crossing words
+find two overlapping words.
+
+
+
+STATS
+time
+ops
+level
+total words
+long words
+super long words
+doubles (2 words overlapping)
+crosswords (2 words crossing in middle)
+
+
+
+
